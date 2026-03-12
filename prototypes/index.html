@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPSA — AI Sales Teams for Wholesale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --navy: #0B0B1A;
+  --accent: #8B5CF6;
+  --accent-light: #A78BFA;
+  --white: #FFFFFF;
+  --cream: #F5F3FF;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --text-dark: #111111;
+  --coral: #E85D4D;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  color: var(--text-dark);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+.section-label--light { color: var(--accent-light); }
+.section-label--dark { color: var(--accent); }
+.section-label--accent { color: var(--coral); }
+
+/* ═══ ANIMATIONS ═══ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ═══ NAV ═══ */
+.nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  z-index: 1000;
+  padding: 0 40px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.nav.scrolled {
+  background: rgba(11, 11, 26, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.nav-links {
+  display: flex;
+  gap: 48px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-links a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: white; }
+.nav-cta {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+.nav-cta:hover { background: var(--accent-light); transform: translateY(-1px); }
+@media (max-width: 768px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav { padding: 0 24px; }
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: linear-gradient(135deg, var(--navy) 0%, #1a1a3e 50%, var(--navy) 100%);
+  overflow: hidden;
+  padding-top: 76px;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  right: 10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(60px);
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  color: white;
+}
+.hero .section-label {
+  display: inline-block;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-bottom: 32px;
+}
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: white;
+  margin-bottom: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.hero-headline em { font-style: normal; color: var(--accent-light); }
+.hero-sub {
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.hero-trust {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 40px;
+}
+.hero-ctas {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 80px;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.btn-primary:hover { background: var(--accent-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.3); }
+.btn-secondary {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.05); }
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+.scroll-chevron {
+  font-size: 1.2rem;
+  margin-top: 8px;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+@media (max-width: 600px) {
+  .hero-ctas { flex-direction: column; }
+  .hero-content { padding: 0 20px; }
+}
+
+/* ═══ WHY NOW ═══ */
+.why-now {
+  background: var(--cream);
+  padding: 120px 24px;
+}
+.why-now-header {
+  text-align: center;
+  margin-bottom: 80px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.why-now-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--text-dark);
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+.why-now-sub {
+  font-size: 1.1rem;
+  color: var(--gray-500);
+  line-height: 1.7;
+}
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  margin-bottom: 80px;
+}
+.pain-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px 32px;
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.pain-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+.pain-card-icon {
+  font-size: 2.2rem;
+  margin-bottom: 16px;
+  display: block;
+}
+.pain-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: var(--text-dark); }
+.pain-card p { font-size: 0.95rem; color: var(--gray-500); line-height: 1.6; }
+
+.why-now-bridge {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  color: var(--text-dark);
+  text-align: center;
+  line-height: 1.5;
+  padding: 60px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.why-now-bridge em { font-style: normal; color: var(--accent); }
+
+@media (max-width: 768px) {
+  .pain-grid { grid-template-columns: 1fr; gap: 24px; }
+  .why-now-bridge { font-size: 1.3rem; padding: 40px 20px; }
+}
+
+/* ═══ INTELLIGENCE HUB ═══ */
+.intelligence {
+  background: var(--navy);
+  padding: 120px 24px;
+  color: white;
+}
+.intelligence-header {
+  text-align: center;
+  margin-bottom: 80px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.intelligence-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+.intelligence-sub {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+}
+
+/* Diagram */
+.diagram {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 80px;
+  min-height: 200px;
+}
+.diagram-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+.diagram-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.diagram-input.visible { opacity: 1; transform: translateX(0); }
+.diagram-input:nth-child(1).visible { transition-delay: 0s; }
+.diagram-input:nth-child(2).visible { transition-delay: 0.2s; }
+.diagram-input:nth-child(3).visible { transition-delay: 0.4s; }
+.diagram-input-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+.diagram-input h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.diagram-input p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Hub */
+.diagram-hub {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.hub {
+  width: 160px;
+  height: 160px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(167, 139, 250, 0.2));
+  border: 2px solid rgba(167, 139, 250, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.7s ease;
+  box-shadow: 0 0 20px rgba(139,92,246,0.1);
+}
+.hub.visible {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: 0.6s;
+  box-shadow: 0 0 60px rgba(139,92,246,0.5), 0 0 120px rgba(139,92,246,0.2);
+  animation: hubGlow 3s ease-in-out 1.5s infinite;
+}
+@keyframes hubGlow {
+  0%, 100% { box-shadow: 0 0 60px rgba(139,92,246,0.5), 0 0 120px rgba(139,92,246,0.2); }
+  50% { box-shadow: 0 0 80px rgba(139,92,246,0.7), 0 0 160px rgba(139,92,246,0.3); }
+}
+.hub-text {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Output */
+.diagram-output {
+  flex: 1;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.diagram-output.visible {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 1.2s;
+}
+.output-arrow {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+.diagram-output h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.diagram-output p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Insight cards */
+.insights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 60px;
+}
+.insight-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 8px;
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.insight-card.visible { opacity: 1; transform: translateY(0); }
+.insight-card:nth-child(1).visible { transition-delay: 1.5s; }
+.insight-card:nth-child(2).visible { transition-delay: 1.7s; }
+.insight-card:nth-child(3).visible { transition-delay: 1.9s; }
+
+.intelligence-footer {
+  text-align: center;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.intelligence-footer em { font-style: normal; color: var(--accent-light); }
+
+@media (max-width: 1024px) {
+  .diagram {
+    flex-direction: column;
+    gap: 60px;
+  }
+  .diagram-inputs { width: 100%; }
+  .diagram-output { width: 100%; }
+}
+@media (max-width: 768px) {
+  .insights { grid-template-columns: 1fr; }
+}
+
+/* ═══ SALES AGENT ═══ */
+.sales-agent {
+  background: var(--navy);
+  padding: 120px 24px;
+  color: white;
+}
+.sales-agent-header {
+  text-align: center;
+  margin-bottom: 80px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sales-agent-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+.sales-agent-sub {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+}
+
+.agent-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 60px;
+}
+.agent-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 12px;
+  padding: 40px 32px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, background 0.3s;
+}
+.agent-card:hover {
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+}
+.agent-card.visible { opacity: 1; transform: translateY(0); }
+.agent-card:nth-child(1).visible { transition-delay: 0.1s; }
+.agent-card:nth-child(2).visible { transition-delay: 0.3s; }
+.agent-card:nth-child(3).visible { transition-delay: 0.5s; }
+.agent-icon {
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+}
+.agent-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+.agent-card p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+}
+
+.agent-connector {
+  text-align: center;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  line-height: 1.7;
+}
+.agent-connector em { font-style: normal; color: var(--accent-light); }
+
+.agent-teaser {
+  text-align: center;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .agent-cards { grid-template-columns: 1fr; }
+}
+
+/* ═══ HOW IT WORKS (TIMELINE) ═══ */
+.how-it-works {
+  background: var(--cream);
+  padding: 120px 24px;
+}
+.hiw-header {
+  text-align: center;
+  margin-bottom: 80px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hiw-label {
+  display: inline-block;
+}
+.hiw-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: var(--text-dark);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+.hiw-sub {
+  font-size: 1.1rem;
+  color: var(--gray-500);
+  line-height: 1.7;
+}
+
+/* Timeline */
+.timeline-wrapper {
+  position: relative;
+}
+.timeline-progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 60px;
+  position: relative;
+  padding: 0 60px;
+}
+.timeline-dot {
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+}
+.timeline-dot.inactive { background: rgba(0, 0, 0, 0.1); }
+.timeline-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.08);
+  z-index: 1;
+  transform: translateY(-50%);
+}
+.timeline-progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  z-index: 1;
+  transform: translateY(-50%);
+  width: 0%;
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeline-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.timeline-column {
+  text-align: center;
+}
+.timeline-column-week {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 28px;
+}
+.timeline-column-items {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.timeline-item {
+  font-size: 0.95rem;
+  color: var(--gray-500);
+  line-height: 1.5;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  opacity: 0.5;
+  transition: opacity 0.5s ease;
+}
+.timeline-item.active {
+  opacity: 1;
+  color: var(--text-dark);
+}
+.timeline-item-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--gray-400);
+  border-radius: 3px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  position: relative;
+  transition: background 0.4s, border-color 0.4s;
+}
+.timeline-item.active .timeline-item-checkbox {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.timeline-item.active .timeline-item-checkbox::after {
+  content: '✓';
+  position: absolute;
+  top: -4px;
+  left: 2px;
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .timeline-columns { grid-template-columns: 1fr; }
+  .timeline-progress-container { padding: 0; flex-direction: column; gap: 40px; }
+  .timeline-line, .timeline-progress { display: none; }
+  .timeline-column { padding: 40px 24px; background: rgba(0, 0, 0, 0.02); border-radius: 8px; }
+}
+
+/* ═══ RESULTS ═══ */
+.results {
+  background: var(--navy);
+  padding: 120px 24px;
+  color: white;
+}
+.results-header {
+  text-align: center;
+  margin-bottom: 80px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.results-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 80px;
+}
+.metric {
+  text-align: center;
+  padding: 40px 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 12px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.metric.visible { opacity: 1; transform: translateY(0); }
+.metric:nth-child(1).visible { transition-delay: 0.1s; }
+.metric:nth-child(2).visible { transition-delay: 0.3s; }
+.metric:nth-child(3).visible { transition-delay: 0.5s; }
+.metric-number {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--accent-light);
+  margin-bottom: 12px;
+  line-height: 1;
+}
+.metric-label {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.metric-sub {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.testimonials {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.testimonial {
+  padding: 40px 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 12px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.testimonial.visible { opacity: 1; transform: translateY(0); }
+.testimonial:nth-child(1).visible { transition-delay: 0.7s; }
+.testimonial:nth-child(2).visible { transition-delay: 0.9s; }
+.testimonial:nth-child(3).visible { transition-delay: 1.1s; }
+.testimonial-quote {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  font-style: italic;
+  position: relative;
+  padding-left: 20px;
+}
+.testimonial-quote::before {
+  content: '"';
+  position: absolute;
+  left: 0;
+  font-size: 2rem;
+  color: var(--accent);
+  opacity: 0.3;
+}
+.testimonial-attr {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .metrics, .testimonials { grid-template-columns: 1fr; }
+}
+
+/* ═══ FINAL CTA ═══ */
+.final-cta {
+  background: var(--navy);
+  padding: 80px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.final-cta-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+}
+.final-cta-content {
+  flex: 1;
+  color: white;
+}
+.final-cta-headline {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.5vw, 2.5rem);
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+.final-cta-sub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+.final-cta-button {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .final-cta-wrapper { flex-direction: column; gap: 32px; }
+  .final-cta-button { width: 100%; }
+  .btn-primary { width: 100%; }
+}
+
+/* ═══ FOOTER ═══ */
+.footer {
+  background: var(--navy);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 40px 24px;
+  color: rgba(255, 255, 255, 0.6);
+}
+.footer-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+.footer-left {
+  font-size: 0.9rem;
+}
+.footer-right {
+  display: flex;
+  gap: 24px;
+  font-size: 0.85rem;
+}
+.footer-right a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-right a:hover { color: rgba(255, 255, 255, 0.9); }
+.footer-separator {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  .footer-wrapper { flex-direction: column; gap: 24px; }
+  .footer-right { flex-direction: column; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav">
+  <a href="#hero" class="nav-logo">OPSA</a>
+  <div class="nav-links">
+    <a href="#intelligence">OPSA Intelligence</a>
+    <a href="#sales-agent">AI Sales Team</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#results">Results</a>
+  </div>
+  <button class="nav-cta" onclick="scrollToSection('#how-it-works')">Start Selling Smarter</button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-headline">Your AI Sales Team, Working <em>Around the Clock.</em></h1>
+      <p class="hero-sub">OPSA helps you generate revenue through an AI team that finds, reaches, and closes buyers — working alongside your team without any changes to your workflow.</p>
+      <p class="hero-trust">Trusted by wholesale distributors across the US</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="scrollToSection('#how-it-works')">Schedule a Demo</button>
+        <button class="btn-secondary" onclick="scrollToSection('#sales-agent')">See How It Works</button>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <span class="scroll-chevron">↓</span>
+  </div>
+</section>
+
+<!-- ═══ WHY NOW ═══ -->
+<section class="why-now" id="why-now">
+  <div class="container">
+    <div class="why-now-header reveal">
+      <div class="section-label section-label--dark">WHY NOW</div>
+      <h2 class="why-now-headline">AI can now think like your best rep — and act like one too.</h2>
+      <p class="why-now-sub">You invested in ERP, CRM, even e-commerce — and they made your team more efficient. But none of them generate revenue. OPSA does.</p>
+    </div>
+
+    <div class="pain-grid">
+      <div class="pain-card reveal reveal-delay-1">
+        <span class="pain-card-icon">📬</span>
+        <h3>Reps Buried in Admin, Not Selling</h3>
+        <p>Quoting, re-keying orders, chasing approvals — your salespeople spend more time on paperwork than in front of buyers.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <span class="pain-card-icon">⏱️</span>
+        <h3>Quotes Take Days. Deals Don't Wait.</h3>
+        <p>By the time a quote gets built, approved, and sent, the buyer's already called your competitor.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-3">
+        <span class="pain-card-icon">📉</span>
+        <h3>Follow-Ups Fall Through the Cracks</h3>
+        <p>Trade show leads go cold. Dormant accounts stay dormant. Your best cross-sell opportunities die in someone's inbox.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-4">
+        <span class="pain-card-icon">💸</span>
+        <h3>Pricing Is a Mess. Margins Leak.</h3>
+        <p>Customer-specific pricing scattered across spreadsheets, emails, and people's heads. Every inconsistent quote is money left on the table.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ OPSA INTELLIGENCE ═══ -->
+<section class="intelligence" id="intelligence">
+  <div class="container">
+    <div class="intelligence-header reveal">
+      <div class="section-label section-label--light">THE BRAIN</div>
+      <h2 class="intelligence-headline">OPSA Intelligence: Your Business Data, Powering Your AI Sales Team</h2>
+      <p class="intelligence-sub">Your ERP, your reps' knowledge, your buyer history — OPSA Intelligence absorbs it all. The right offer, to the right buyer, at the right price. Every time.</p>
+    </div>
+
+    <div class="diagram reveal">
+      <div class="diagram-inputs">
+        <div class="diagram-input">
+          <div class="diagram-input-icon">🗄️</div>
+          <h4>Your ERP</h4>
+          <p>Orders, inventory, pricing rules</p>
+        </div>
+        <div class="diagram-input">
+          <div class="diagram-input-icon">👥</div>
+          <h4>Your Reps</h4>
+          <p>Deals, buyer preferences</p>
+        </div>
+        <div class="diagram-input">
+          <div class="diagram-input-icon">📊</div>
+          <h4>Your Buyers</h4>
+          <p>Order history, reorder timing</p>
+        </div>
+      </div>
+
+      <div class="diagram-hub">
+        <div class="hub">
+          <div class="hub-text">OPSA<br>Intelligence</div>
+        </div>
+      </div>
+
+      <div class="diagram-output">
+        <div class="output-arrow">→</div>
+        <h4>Your OPSA AI Sales Team</h4>
+        <p>Find, reach, and close buyers</p>
+      </div>
+    </div>
+
+    <div class="intelligence-footer reveal">Your ERP holds the data. Your reps hold the relationships. <em>OPSA Intelligence combines both</em> — so every agent makes informed decisions, not guesses.</div>
+  </div>
+</section>
+
+<!-- ═══ SALES AGENT ═══ -->
+<section class="sales-agent" id="sales-agent">
+  <div class="container">
+    <div class="sales-agent-header reveal">
+      <div class="section-label section-label--light">AI SALES TEAM</div>
+      <h2 class="sales-agent-headline">Three AI Agents. One Sales Team.</h2>
+      <p class="sales-agent-sub">OPSA's Sales Agent handles every step of the sale — research, outreach, and closing — without adding a single headcount.</p>
+    </div>
+
+    <div class="agent-cards reveal">
+      <div class="agent-card">
+        <div class="agent-icon">🔍</div>
+        <h3>AI Researcher</h3>
+        <p>Finds buyers who are ready to order — based on what they've bought before, when they reorder, and what's trending in your market.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">💬</div>
+        <h3>AI Sales Rep</h3>
+        <p>Reaches out to buyers over email and messaging with personalized offers. Answers questions, handles follow-ups, and keeps in touch — automatically.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-icon">🤝</div>
+        <h3>AI Deal Maker</h3>
+        <p>Negotiates pricing within your rules, sends quotes, handles pushback, and closes the order. Your team gets notified when the deal is done.</p>
+      </div>
+    </div>
+
+    <p class="agent-teaser reveal">This is step one. Selling smarter. Step two: buying smarter. Stay tuned.</p>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS (TIMELINE) ═══ -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="hiw-header reveal">
+      <div class="section-label section-label--accent hiw-label">HOW TO HIRE OPSA</div>
+      <h2 class="hiw-headline">Live in Weeks, Not Months</h2>
+      <p class="hiw-sub">No new software to learn. No workflow to change. OPSA plugs into your existing systems and works where your team already does — email, ERP, and WhatsApp.</p>
+    </div>
+
+    <div class="timeline-wrapper reveal">
+      <div class="timeline-progress-container">
+        <div class="timeline-dot"></div>
+        <div class="timeline-dot inactive"></div>
+        <div class="timeline-dot inactive"></div>
+        <div class="timeline-line"></div>
+        <div class="timeline-progress" id="timelineProgress"></div>
+      </div>
+
+      <div class="timeline-columns">
+        <div class="timeline-column">
+          <div class="timeline-column-week">WEEK 1</div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 20px;">Connect Your Systems</h3>
+          <div class="timeline-column-items">
+            <div class="timeline-item active">
+              <div class="timeline-item-checkbox"></div>
+              <span>Connect your ERP and inventory feeds</span>
+            </div>
+            <div class="timeline-item active">
+              <div class="timeline-item-checkbox"></div>
+              <span>Upload your buyer lists and contact database</span>
+            </div>
+            <div class="timeline-item active">
+              <div class="timeline-item-checkbox"></div>
+              <span>Share your pricing rules and margin targets</span>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-column">
+          <div class="timeline-column-week">WEEK 2</div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 20px;">OPSA Learns Your Business</h3>
+          <div class="timeline-column-items">
+            <div class="timeline-item active">
+              <div class="timeline-item-checkbox"></div>
+              <span>AI profiles every buyer — order history, preferences, pricing</span>
+            </div>
+            <div class="timeline-item active">
+              <div class="timeline-item-checkbox"></div>
+              <span>Learns your product catalog and what's in stock</span>
+            </div>
+            <div class="timeline-item active">
+              <div class="timeline-item-checkbox"></div>
+              <span>Studies your reps' past deals and what's worked</span>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-column">
+          <div class="timeline-column-week">WEEK 3</div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 20px;">Start Closing Deals</h3>
+          <div class="timeline-column-items">
+            <div class="timeline-item">
+              <div class="timeline-item-checkbox"></div>
+              <span>AI reaches out to the right buyers with personalized offers</span>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-item-checkbox"></div>
+              <span>Handles replies, follows up, negotiates pricing</span>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-item-checkbox"></div>
+              <span>Orders flow directly into your ERP — your team gets notified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ RESULTS ═══ -->
+<section class="results" id="results">
+  <div class="container">
+    <div class="results-header reveal">
+      <div class="section-label section-label--light">RESULTS</div>
+      <h2 class="results-headline">Proof, Not Promises</h2>
+    </div>
+
+    <div class="metrics reveal">
+      <div class="metric">
+        <div class="metric-number">$125K+</div>
+        <div class="metric-label">New revenue per month</div>
+        <div class="metric-sub">Per partner, 90-day average</div>
+      </div>
+      <div class="metric">
+        <div class="metric-number">60%</div>
+        <div class="metric-label">Quiet accounts started ordering again</div>
+        <div class="metric-sub">Within 3 months</div>
+      </div>
+      <div class="metric">
+        <div class="metric-number">40+</div>
+        <div class="metric-label">Orders closed</div>
+        <div class="metric-sub">First customer, first 90 days</div>
+      </div>
+    </div>
+
+    <div class="testimonials reveal">
+      <div class="testimonial">
+        <p class="testimonial-quote">We're closing deals on accounts we hadn't touched in months. OPSA found revenue we didn't know existed.</p>
+        <p class="testimonial-attr">— Sales Manager, National Distributor</p>
+      </div>
+      <div class="testimonial">
+        <p class="testimonial-quote">The orders just started appearing in our ERP. My team didn't have to do anything different.</p>
+        <p class="testimonial-attr">— VP Operations, Wholesale Company</p>
+      </div>
+      <div class="testimonial">
+        <p class="testimonial-quote">We scaled revenue without a single new hire. The ROI was obvious within the first month.</p>
+        <p class="testimonial-attr">— CEO, Distribution Company</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final-cta">
+  <div class="final-cta-wrapper reveal">
+    <div class="final-cta-content">
+      <h2 class="final-cta-headline">Ready to Hire Your AI Sales Team?</h2>
+      <p class="final-cta-sub">See how OPSA can generate new revenue for your business — without adding headcount.</p>
+    </div>
+    <div class="final-cta-button">
+      <button class="btn-primary" onclick="scrollToSection('#how-it-works')">Start Selling Smarter →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-wrapper">
+    <div class="footer-left">Opsa Inc.</div>
+    <div class="footer-right">
+      <a href="mailto:tech@opsa.ai">tech@opsa.ai</a>
+      <span class="footer-separator">·</span>
+      <a href="#privacy">Privacy Policy</a>
+      <span class="footer-separator">·</span>
+      <a href="#terms">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ═══ SCROLL REVEAL ═══
+const revealElements = document.querySelectorAll('.reveal');
+const observerOptions = {
+  threshold: 0.15,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOptions);
+
+revealElements.forEach(el => observer.observe(el));
+
+// ═══ NAV SCROLL BEHAVIOR ═══
+const nav = document.querySelector('.nav');
+let lastScrollTop = 0;
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  if (scrollTop > 100) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+  lastScrollTop = scrollTop;
+});
+
+// ═══ SMOOTH SCROLL ═══
+function scrollToSection(selector) {
+  const el = document.querySelector(selector);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// ═══ INTELLIGENCE DIAGRAM ANIMATION ═══
+(function() {
+  const diagramSection = document.querySelector('.intelligence');
+  const diagramInputs = document.querySelectorAll('.diagram-input');
+  const hub = document.querySelector('.hub');
+  const output = document.querySelector('.diagram-output');
+  const insights = document.querySelectorAll('.insight-card');
+
+  const diagramObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          diagramInputs.forEach(input => input.classList.add('visible'));
+        }, 100);
+        setTimeout(() => {
+          hub.classList.add('visible');
+        }, 600);
+        setTimeout(() => {
+          output.classList.add('visible');
+        }, 800);
+        setTimeout(() => {
+          insights.forEach(insight => insight.classList.add('visible'));
+        }, 1300);
+        diagramObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  diagramObserver.observe(diagramSection);
+})();
+
+// ═══ TIMELINE PROGRESS ANIMATION ═══
+(function() {
+  const timelineSection = document.querySelector('.how-it-works');
+  const timelineProgress = document.getElementById('timelineProgress');
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  const timelineDots = document.querySelectorAll('.timeline-dot');
+
+  const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const scrollPercent = Math.min(100, Math.max(0, (window.scrollY - entry.target.offsetTop + window.innerHeight / 2) / (entry.target.offsetHeight) * 100));
+
+        // Update progress bar
+        timelineProgress.style.width = scrollPercent + '%';
+
+        // Week 3 items activation
+        if (scrollPercent > 66) {
+          timelineItems.forEach((item, idx) => {
+            if (idx >= 6) { // Week 3 items
+              item.classList.add('active');
+            }
+          });
+          timelineDots[2].classList.remove('inactive');
+        } else {
+          timelineItems.forEach((item, idx) => {
+            if (idx >= 6) {
+              item.classList.remove('active');
+            }
+          });
+          timelineDots[2].classList.add('inactive');
+        }
+
+        // Week 2 items activation
+        if (scrollPercent > 33) {
+          timelineItems.forEach((item, idx) => {
+            if (idx >= 3 && idx < 6) { // Week 2 items
+              item.classList.add('active');
+            }
+          });
+          timelineDots[1].classList.remove('inactive');
+        } else {
+          timelineItems.forEach((item, idx) => {
+            if (idx >= 3 && idx < 6) {
+              item.classList.remove('active');
+            }
+          });
+          timelineDots[1].classList.add('inactive');
+        }
+      }
+    });
+  }, { threshold: 0 });
+
+  timelineObserver.observe(timelineSection);
+})();
+
+// ═══ AGENT CARDS ANIMATION ═══
+(function() {
+  const agentCards = document.querySelectorAll('.agent-card');
+  const agentSection = document.querySelector('.sales-agent');
+
+  const agentObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        agentCards.forEach(card => card.classList.add('visible'));
+        agentObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  agentObserver.observe(agentSection);
+})();
+
+// ═══ METRICS & TESTIMONIALS ANIMATION ═══
+(function() {
+  const metrics = document.querySelectorAll('.metric');
+  const testimonials = document.querySelectorAll('.testimonial');
+  const resultsSection = document.querySelector('.results');
+
+  const resultsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        metrics.forEach(metric => metric.classList.add('visible'));
+        testimonials.forEach(testimonial => testimonial.classList.add('visible'));
+        resultsObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  resultsObserver.observe(resultsSection);
+})();
+
+// ═══ PAIN CARDS STAGGER ═══
+(function() {
+  const painCards = document.querySelectorAll('.pain-card');
+  painCards.forEach((card, idx) => {
+    card.classList.add(`reveal-delay-${idx + 1}`);
+  });
+})();
+</script>
+</body>
+</html>
